@@ -28,21 +28,47 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; padding: 16px; }
   .page { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
-  .hdr h1 { font-size: 17px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 7px; }
-  .hdr p { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+  /* Header */
+  .hdr { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .hdr-left h1 { font-size: 17px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 7px; }
+  .hdr-left p { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .sync-btn { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 7px 13px; font-size: 12px; font-weight: 600; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; gap: 5px; white-space: nowrap; font-family: inherit; flex-shrink: 0; }
+  .sync-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .sync-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Loading / Error */
   .loading { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .error-box { background: var(--danger-bg); border: 0.5px solid var(--danger); border-radius: var(--radius); padding: 14px 16px; font-size: 13px; color: var(--danger); display: none; }
+
+  /* Stats */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; }
   .stat-label { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
   .stat-val { font-size: 22px; font-weight: 600; color: var(--text); }
   .stat-val.green { color: var(--success); }
   .stat-val.red { color: var(--danger); }
+
+  /* Payment Breakdown */
+  .breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .bcard { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+  .bcard-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .bcard-dot.tng  { background: #2e7d32; }
+  .bcard-dot.bank { background: #1565c0; }
+  .bcard-dot.cash { background: #b45309; }
+  .bcard-info { flex: 1; min-width: 0; }
+  .bcard-method { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: .04em; }
+  .bcard-count  { font-size: 11px; color: var(--text-sub); margin: 1px 0; }
+  .bcard-amount { font-size: 16px; font-weight: 600; color: var(--text); }
+
+  /* Two column layout */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
   .card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; padding: 18px; }
   .card-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+
+  /* Record Payment form */
   .field { margin-bottom: 14px; }
   .field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
   .search-wrap { position: relative; }
@@ -56,7 +82,7 @@
   .dd-inv { font-size: 11px; color: var(--text-muted); }
   .sel-box { display: none; align-items: center; gap: 10px; padding: 10px 14px; background: var(--accent-bg); border: 0.5px solid var(--accent-border); border-radius: var(--radius); margin-top: 8px; }
   .sel-name { font-size: 14px; font-weight: 600; color: var(--accent-text); flex: 1; }
-  .sel-inv { font-size: 11px; color: var(--text-muted); }
+  .sel-inv  { font-size: 11px; color: var(--text-muted); }
   .clr { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 18px; padding: 4px; line-height: 1; -webkit-tap-highlight-color: transparent; }
   .clr:hover { color: var(--text); }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -72,46 +98,80 @@
   .log-item:last-child { border-bottom: none; }
   .log-name { flex: 1; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .log-date { font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+
+  /* Tags */
   .mtag { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-  .mtag.TNG { background: #e8f5e9; color: #2e7d32; }
+  .mtag.TNG  { background: #e8f5e9; color: #2e7d32; }
   .mtag.Bank { background: #e3f2fd; color: #1565c0; }
   .mtag.Cash { background: #fff8e1; color: #b45309; }
+
+  /* Roster */
   .tabs { display: flex; border-bottom: 0.5px solid var(--border); margin-bottom: 10px; }
   .tab { padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -0.5px; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
   .roster-search { width: 100%; height: 36px; padding: 0 10px; border: 0.5px solid var(--border); border-radius: var(--radius); background: var(--surface-alt); color: var(--text); font-size: 13px; margin-bottom: 10px; font-family: inherit; }
   .roster-search:focus { outline: none; border-color: var(--accent); }
   .member-list { max-height: 380px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  .mrow { display: flex; align-items: center; gap: 8px; padding: 9px 4px; border-bottom: 0.5px solid var(--border); }
+  .mrow { display: flex; align-items: center; gap: 6px; padding: 8px 4px; border-bottom: 0.5px solid var(--border); }
   .mrow:last-child { border-bottom: none; }
-  .mnum { width: 20px; color: var(--text-muted); font-size: 11px; flex-shrink: 0; text-align: right; }
-  .mname { flex: 1; color: var(--text); font-size: 13px; }
-  .mname.isnew { color: var(--success); font-weight: 600; }
+  .mnum  { width: 20px; color: var(--text-muted); font-size: 11px; flex-shrink: 0; text-align: right; }
+  .mname { flex: 1; color: var(--text); font-size: 13px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mname.isnew  { color: var(--success); font-weight: 600; }
   .mname.isdrop { color: var(--danger); text-decoration: line-through; opacity: 0.55; }
-  .mbadge { padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-  .mbadge.paid { background: var(--success-bg); color: var(--success); }
-  .mbadge.unpaid { background: var(--danger-bg); color: var(--danger); }
-  .mbadge.new { background: var(--success-bg); color: var(--success); }
-  .mbadge.drop { background: var(--danger-bg); color: var(--danger); }
+  .mbadge { padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+  .mbadge.paid   { background: var(--success-bg); color: var(--success); }
+  .mbadge.unpaid { background: var(--danger-bg);  color: var(--danger);  }
+  .mbadge.new    { background: var(--success-bg); color: var(--success); }
+  .mbadge.drop   { background: var(--danger-bg);  color: var(--danger);  }
+  .drop-btn { background: none; border: 0.5px solid var(--border-strong); border-radius: 4px; cursor: pointer; color: var(--text-muted); font-size: 10px; padding: 2px 7px; font-family: inherit; white-space: nowrap; flex-shrink: 0; }
+  .drop-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
   .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 13px; }
   .changes-info { font-size: 11px; color: var(--text-sub); margin-bottom: 10px; padding: 8px 10px; background: var(--surface-alt); border-radius: var(--radius); display: none; line-height: 1.6; }
   .changes-info.show { display: block; }
+
+  /* Drop Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; display: none; align-items: center; justify-content: center; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--surface); border-radius: 12px; padding: 24px; width: 100%; max-width: 320px; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+  .modal-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 7px; }
+  .modal-desc { font-size: 13px; color: var(--text-sub); margin-bottom: 18px; line-height: 1.5; }
+  .modal-desc strong { color: var(--text); }
+  .modal-label { display: block; font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+  .modal input[type=date] { width: 100%; height: 42px; padding: 0 12px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface-alt); color: var(--text); font-size: 14px; font-family: inherit; margin-bottom: 18px; }
+  .modal-btns { display: flex; gap: 8px; }
+  .modal-btn { flex: 1; height: 40px; border-radius: var(--radius); font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; }
+  .modal-btn.cancel  { background: var(--surface-alt); color: var(--text-sub); border: 0.5px solid var(--border-strong); }
+  .modal-btn.confirm { background: var(--danger); color: #fff; }
+  .modal-btn.cancel:hover  { border-color: var(--border-strong); color: var(--text); }
+  .modal-btn.confirm:hover { opacity: 0.88; }
+
+  /* Toast */
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 11px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap; }
   .toast.show { opacity: 1; }
+
+  /* Responsive */
   @media (max-width: 580px) {
-    .two-col { grid-template-columns: 1fr; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
+    .two-col  { grid-template-columns: 1fr; }
+    .stats    { grid-template-columns: repeat(2, 1fr); }
+    .breakdown{ grid-template-columns: repeat(3, 1fr); }
     .stat-val { font-size: 24px; }
-    .row2 { grid-template-columns: 1fr; }
+    .row2     { grid-template-columns: 1fr; }
+    .bcard-amount { font-size: 14px; }
   }
 </style>
 </head>
 <body>
 <div class="page">
 
+  <!-- Header -->
   <div class="hdr">
-    <h1><i class="ti ti-building"></i> BNI Dynamic Treasurer · July 2026</h1>
-    <p>Member list last synced: <span id="last-sync">—</span> · Updates every Tuesday</p>
+    <div class="hdr-left">
+      <h1><i class="ti ti-building"></i> BNI Dynamic Treasurer · July 2026</h1>
+      <p>Last synced: <span id="last-sync">—</span> · Updates every Tuesday</p>
+    </div>
+    <button class="sync-btn" id="sync-btn" onclick="syncAll()">
+      <i class="ti ti-refresh"></i> Sync
+    </button>
   </div>
 
   <div class="error-box" id="error-box">
@@ -119,7 +179,17 @@
   </div>
 
   <div id="main-content" style="display:none; flex-direction:column; gap:14px;">
+
+    <!-- Stats row -->
     <div class="stats" id="stats"></div>
+
+    <!-- Payment breakdown row -->
+    <div class="breakdown" id="breakdown">
+      <div class="bcard"><div class="bcard-dot tng"></div><div class="bcard-info"><div class="bcard-method">TNG eWallet</div><div class="bcard-count">—</div><div class="bcard-amount">RM 0</div></div></div>
+      <div class="bcard"><div class="bcard-dot bank"></div><div class="bcard-info"><div class="bcard-method">Bank Transfer</div><div class="bcard-count">—</div><div class="bcard-amount">RM 0</div></div></div>
+      <div class="bcard"><div class="bcard-dot cash"></div><div class="bcard-info"><div class="bcard-method">Cash</div><div class="bcard-count">—</div><div class="bcard-amount">RM 0</div></div></div>
+    </div>
+
     <div class="two-col">
 
       <!-- Record Payment -->
@@ -135,7 +205,7 @@
           <div class="sel-box" id="sel-box">
             <div style="flex:1;min-width:0">
               <div class="sel-name" id="sel-name"></div>
-              <div class="sel-inv" id="sel-inv"></div>
+              <div class="sel-inv"  id="sel-inv"></div>
             </div>
             <button class="clr" onclick="clearSel()" aria-label="Clear"><i class="ti ti-x"></i></button>
           </div>
@@ -189,46 +259,129 @@
   </div>
 
 </div>
+
+<!-- Drop Member Modal -->
+<div class="modal-overlay" id="drop-modal" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-title"><i class="ti ti-user-minus" style="color:var(--danger)"></i> Drop Member</div>
+    <div class="modal-desc">Mark <strong id="drop-modal-name"></strong> as dropped?<br>They will be excluded from next month's invoices.</div>
+    <label class="modal-label">Effective Date</label>
+    <input type="date" id="drop-date">
+    <div class="modal-btns">
+      <button class="modal-btn cancel"  onclick="cancelDrop()">Cancel</button>
+      <button class="modal-btn confirm" onclick="confirmDrop()">Confirm Drop</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const WEBHOOK_MEMBERS = 'https://honorable-bull.pikapod.net/webhook/dashboard-members';
-const WEBHOOK_PAYMENT = 'https://honorable-bull.pikapod.net/webhook/dashboard-record-payment';
+// ─── CONSTANTS ────────────────────────────────────────────────────────────────
+const WEBHOOK_MEMBERS  = 'https://honorable-bull.pikapod.net/webhook/dashboard-members';
+const WEBHOOK_PAYMENT  = 'https://honorable-bull.pikapod.net/webhook/dashboard-record-payment';
+const WEBHOOK_PAYMENTS = 'https://honorable-bull.pikapod.net/webhook/dashboard-payments';   // WF4 (to be built)
+const WEBHOOK_DROP     = 'https://honorable-bull.pikapod.net/webhook/dashboard-drop-member'; // WF5 (to be built)
 
-let members = [];
-let paidSet = new Set();
-let sessionLog = [];
-let activeTab = 'all';
-let selected = null;
-let visible = [];
-let ddIdx = -1;
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let members        = [];
+let paymentHistory = []; // loaded from Google Sheets
+let paidSet        = new Set();
+let sessionLog     = [];
+let activeTab      = 'all';
+let selected       = null;
+let visible        = [];
+let ddIdx          = -1;
+let pendingDrop    = null;
 
-document.getElementById('pdate').value = new Date().toISOString().slice(0, 10);
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.getElementById('pdate').value     = new Date().toISOString().slice(0, 10);
+document.getElementById('drop-date').value = new Date().toISOString().slice(0, 10);
 
-// ─── LOAD FROM N8N ────────────────────────────────────────────────────────────
-async function loadMembers() {
+async function init() {
+  const ok = await loadMembersData();
+  if (!ok) {
+    document.getElementById('loading').style.display  = 'none';
+    document.getElementById('error-box').style.display = 'block';
+    return;
+  }
+  await loadPaymentsData(); // load payment history from Google Sheets
+  document.getElementById('loading').style.display      = 'none';
+  document.getElementById('main-content').style.display = 'flex';
+  updateStats();
+  renderRoster();
+}
+
+// ─── SYNC ALL ─────────────────────────────────────────────────────────────────
+async function syncAll() {
+  const btn = document.getElementById('sync-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-refresh" style="animation:spin 0.7s linear infinite"></i> Syncing…';
+
+  paidSet        = new Set();
+  paymentHistory = [];
+  sessionLog     = [];
+
+  await loadMembersData();
+  await loadPaymentsData();
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-refresh"></i> Sync';
+  updateStats();
+  renderRoster();
+  renderLog();
+  toast('Data refreshed ✓');
+}
+
+// ─── LOAD MEMBERS FROM BUKKU ─────────────────────────────────────────────────
+async function loadMembersData() {
   try {
     const res = await fetch(WEBHOOK_MEMBERS);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
     members = (data.members || []).map(m => ({ ...m, change: null }));
-    document.getElementById('last-sync').textContent = new Date().toLocaleDateString('en-MY', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('main-content').style.display = 'flex';
-    updateStats();
-    renderRoster();
-  } catch (e) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('error-box').style.display = 'block';
+    document.getElementById('last-sync').textContent =
+      new Date().toLocaleDateString('en-MY', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    return true;
+  } catch(e) {
+    return false;
+  }
+}
+
+// ─── LOAD PAYMENT HISTORY FROM GOOGLE SHEETS (WF4) ───────────────────────────
+async function loadPaymentsData() {
+  try {
+    const res = await fetch(WEBHOOK_PAYMENTS);
+    if (!res.ok) return;
+    const data = await res.json();
+    paymentHistory = data.payments || [];
+    paymentHistory.forEach(p => {
+      if (p['OR Status'] === 'Paid' && p['Bukku Invoice ID']) {
+        paidSet.add(String(p['Bukku Invoice ID']));
+      }
+    });
+  } catch(e) {
+    // WF4 not ready yet — gracefully continue without history
+    console.log('Payment history not available:', e.message);
   }
 }
 
 // ─── STATS ────────────────────────────────────────────────────────────────────
 function updateStats() {
-  const active = members.filter(m => m.change !== 'drop');
-  const paid = paidSet.size;
-  const unpaid = active.length - paid;
-  const collected = sessionLog.reduce((s, l) => s + (l.amount || 280), 0);
+  const active  = members.filter(m => m.change !== 'drop');
+  const paid    = paidSet.size;
+  const unpaid  = active.length - paid;
+
+  // Total collected = history + session payments not yet in history
+  let collected = 0;
+  paymentHistory.forEach(p => {
+    if (p['OR Status'] === 'Paid') collected += Number(p['Amount'] || 0);
+  });
+  sessionLog.forEach(s => {
+    const alreadyInHistory = paymentHistory.find(p => String(p['Bukku Invoice ID']) === String(s.id));
+    if (!alreadyInHistory) collected += Number(s.amount || 280);
+  });
+
   document.getElementById('stats').innerHTML = `
     <div class="stat"><div class="stat-label">Members</div><div class="stat-val">${active.length}</div></div>
     <div class="stat"><div class="stat-label">Paid</div><div class="stat-val green">${paid}</div></div>
@@ -237,6 +390,32 @@ function updateStats() {
   `;
   document.getElementById('uc').textContent = `(${unpaid})`;
   document.getElementById('cc').textContent = `(${members.filter(m => m.change).length})`;
+
+  // Payment breakdown — combine history + session (deduplicated by invoice ID)
+  const allPaid = [...paymentHistory.filter(p => p['OR Status'] === 'Paid')];
+  sessionLog.forEach(s => {
+    const exists = paymentHistory.find(p => String(p['Bukku Invoice ID']) === String(s.id));
+    if (!exists) allPaid.push({ 'Payment Method': s.method, 'Amount': s.amount || 280 });
+  });
+
+  const methods = [
+    { key: 'TNG',  label: 'TNG eWallet',  dot: 'tng'  },
+    { key: 'Bank', label: 'Bank Transfer', dot: 'bank' },
+    { key: 'Cash', label: 'Cash',          dot: 'cash' }
+  ];
+  document.getElementById('breakdown').innerHTML = methods.map(m => {
+    const rows  = allPaid.filter(p => p['Payment Method'] === m.key);
+    const count = rows.length;
+    const total = rows.reduce((s, p) => s + Number(p['Amount'] || 0), 0);
+    return `<div class="bcard">
+      <div class="bcard-dot ${m.dot}"></div>
+      <div class="bcard-info">
+        <div class="bcard-method">${m.label}</div>
+        <div class="bcard-count">${count} 笔</div>
+        <div class="bcard-amount">RM ${total.toLocaleString()}</div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ─── ROSTER ───────────────────────────────────────────────────────────────────
@@ -251,36 +430,54 @@ function setTab(t, el) {
 function renderRoster() {
   const q = document.getElementById('roster-search').value.toLowerCase();
   let list = members;
-  if (activeTab === 'unpaid') list = members.filter(m => !paidSet.has(m.id) && m.change !== 'drop');
+  if      (activeTab === 'unpaid')  list = members.filter(m => !paidSet.has(String(m.id)) && m.change !== 'drop');
   else if (activeTab === 'changes') list = members.filter(m => m.change);
-  else list = members.filter(m => m.change !== 'drop');
+  else                               list = members.filter(m => m.change !== 'drop');
   if (q) list = list.filter(m => m.name.toLowerCase().includes(q));
+
   const el = document.getElementById('member-list');
   if (!list.length) { el.innerHTML = '<div class="empty">No members found</div>'; return; }
+
   el.innerHTML = list.map((m, i) => {
-    const paid = paidSet.has(m.id);
-    const nc = m.change === 'new' ? 'mname isnew' : m.change === 'drop' ? 'mname isdrop' : 'mname';
-    const badge = m.change === 'new' ? '<span class="mbadge new">New</span>' :
-                  m.change === 'drop' ? '<span class="mbadge drop">Drop</span>' :
+    const paid = paidSet.has(String(m.id));
+    const nc   = m.change === 'new'  ? 'mname isnew'  :
+                 m.change === 'drop' ? 'mname isdrop' : 'mname';
+    const badge = m.change === 'new'  ? '<span class="mbadge new">New</span>'    :
+                  m.change === 'drop' ? '<span class="mbadge drop">Drop</span>'  :
                   paid ? '<span class="mbadge paid">Paid</span>' : '<span class="mbadge unpaid">Unpaid</span>';
-    const entry = sessionLog.find(l => l.id === m.id);
-    const methodTag = entry ? `<span class="mtag ${entry.method}">${entry.method}</span>` : '';
+
+    // Payment method tag — check history first, then session log
+    const histEntry = paymentHistory.find(p => String(p['Bukku Invoice ID']) === String(m.id));
+    const sessEntry = sessionLog.find(l => String(l.id) === String(m.id));
+    const methodKey = histEntry ? histEntry['Payment Method'] : (sessEntry ? sessEntry.method : null);
+    const methodTag = methodKey ? `<span class="mtag ${methodKey}">${methodKey}</span>` : '';
+
+    // Drop button — only for non-dropped members
+    const safeId   = String(m.id).replace(/'/g, "\\'");
+    const safeName = m.name.replace(/'/g, "\\'");
+    const dropBtn  = m.change !== 'drop'
+      ? `<button class="drop-btn" onclick="dropMember('${safeId}','${safeName}')">Drop</button>`
+      : '';
+
     return `<div class="mrow">
       <span class="mnum">${i + 1}</span>
       <span class="${nc}">${m.name}</span>
       ${methodTag}
       ${badge}
+      ${dropBtn}
     </div>`;
   }).join('');
 }
 
-// ─── SEARCH ───────────────────────────────────────────────────────────────────
+// ─── SEARCH / DROPDOWN ────────────────────────────────────────────────────────
 function onSearch() {
   if (selected) return;
-  const q = document.getElementById('search').value.trim().toLowerCase();
+  const q  = document.getElementById('search').value.trim().toLowerCase();
   const dd = document.getElementById('dropdown');
   if (!q) { dd.classList.remove('open'); visible = []; return; }
-  visible = members.filter(m => m.name.toLowerCase().includes(q) && !paidSet.has(m.id) && m.change !== 'drop').slice(0, 8);
+  visible = members
+    .filter(m => m.name.toLowerCase().includes(q) && !paidSet.has(String(m.id)) && m.change !== 'drop')
+    .slice(0, 8);
   if (!visible.length) {
     dd.innerHTML = '<div class="dd-item" style="color:var(--text-muted)">No match found</div>';
     dd.classList.add('open'); return;
@@ -297,10 +494,10 @@ function onSearch() {
 function onKey(e) {
   const dd = document.getElementById('dropdown');
   if (!dd.classList.contains('open')) return;
-  if (e.key === 'ArrowDown') { e.preventDefault(); ddIdx = Math.min(ddIdx + 1, visible.length - 1); hilight(); }
-  else if (e.key === 'ArrowUp') { e.preventDefault(); ddIdx = Math.max(ddIdx - 1, 0); hilight(); }
+  if      (e.key === 'ArrowDown')           { e.preventDefault(); ddIdx = Math.min(ddIdx + 1, visible.length - 1); hilight(); }
+  else if (e.key === 'ArrowUp')             { e.preventDefault(); ddIdx = Math.max(ddIdx - 1, 0); hilight(); }
   else if (e.key === 'Enter' && ddIdx >= 0) { e.preventDefault(); selectMember(ddIdx); }
-  else if (e.key === 'Escape') dd.classList.remove('open');
+  else if (e.key === 'Escape')              { dd.classList.remove('open'); }
 }
 
 function hilight() {
@@ -309,65 +506,64 @@ function hilight() {
 
 function selectMember(i) {
   selected = visible[i];
-  document.getElementById('search').value = selected.name;
+  document.getElementById('search').value           = selected.name;
   document.getElementById('dropdown').classList.remove('open');
-  document.getElementById('sel-name').textContent = selected.name;
-  document.getElementById('sel-inv').textContent = `${selected.inv} · RM${selected.amount}`;
-  document.getElementById('sel-box').style.display = 'flex';
-  document.getElementById('sub-btn').disabled = false;
+  document.getElementById('sel-name').textContent   = selected.name;
+  document.getElementById('sel-inv').textContent    = `${selected.inv} · RM${selected.amount}`;
+  document.getElementById('sel-box').style.display  = 'flex';
+  document.getElementById('sub-btn').disabled       = false;
 }
 
 function clearSel() {
   selected = null;
-  document.getElementById('search').value = '';
+  document.getElementById('search').value          = '';
   document.getElementById('sel-box').style.display = 'none';
-  document.getElementById('sub-btn').disabled = true;
+  document.getElementById('sub-btn').disabled      = true;
   document.getElementById('search').focus();
 }
 
-// ─── SUBMIT ───────────────────────────────────────────────────────────────────
+// ─── SUBMIT PAYMENT ───────────────────────────────────────────────────────────
 async function submitPayment() {
   if (!selected) return;
   const method = document.getElementById('method').value;
-  const date = document.getElementById('pdate').value;
-
-  const btn = document.getElementById('sub-btn');
+  const date   = document.getElementById('pdate').value;
+  const btn    = document.getElementById('sub-btn');
   btn.disabled = true;
   btn.innerHTML = '<i class="ti ti-loader"></i> Sending…';
 
   const payload = {
     bukku_invoice_id: selected.id,
-    invoice_number: selected.inv,
-    member_name: selected.name,
-    amount: selected.amount,
-    payment_method: method,
-    payment_date: date
+    invoice_number:   selected.inv,
+    member_name:      selected.name,
+    amount:           selected.amount,
+    payment_method:   method,
+    payment_date:     date
   };
 
   try {
     await fetch(WEBHOOK_PAYMENT, {
-      method: 'POST',
-      mode: 'no-cors',
+      method:  'POST',
+      mode:    'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify(payload)
+      body:    JSON.stringify(payload)
     });
-    paidSet.add(selected.id);
+    paidSet.add(String(selected.id));
     sessionLog.unshift({ ...selected, method, date });
     toast(`${selected.name} · ${method} recorded ✓`);
     clearSel();
     updateStats();
     renderRoster();
     renderLog();
-  } catch (e) {
+  } catch(e) {
     toast('Error — check n8n webhook');
   } finally {
-    btn.disabled = false;
+    btn.disabled  = false;
     btn.innerHTML = '<i class="ti ti-check"></i> Record payment';
   }
 }
 
 function renderLog() {
-  const sec = document.getElementById('log-section');
+  const sec   = document.getElementById('log-section');
   const items = document.getElementById('log-items');
   if (!sessionLog.length) { sec.style.display = 'none'; return; }
   sec.style.display = 'block';
@@ -380,6 +576,49 @@ function renderLog() {
     </div>`).join('');
 }
 
+// ─── DROP MEMBER ──────────────────────────────────────────────────────────────
+function dropMember(id, name) {
+  pendingDrop = { id, name };
+  document.getElementById('drop-modal-name').textContent = name;
+  document.getElementById('drop-modal').classList.add('open');
+}
+
+function cancelDrop() {
+  pendingDrop = null;
+  document.getElementById('drop-modal').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('drop-modal')) cancelDrop();
+}
+
+async function confirmDrop() {
+  if (!pendingDrop) return;
+  const dropDate = document.getElementById('drop-date').value;
+
+  // Mark locally in members array
+  const member = members.find(m => String(m.id) === String(pendingDrop.id));
+  if (member) member.change = 'drop';
+
+  // Send to n8n (WF5 not built yet — fails gracefully)
+  try {
+    await fetch(WEBHOOK_DROP, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify({ member_id: pendingDrop.id, member_name: pendingDrop.name, drop_date: dropDate })
+    });
+  } catch(e) {
+    // Webhook not ready yet; local marking still works
+  }
+
+  toast(`${pendingDrop.name} marked as Drop`);
+  cancelDrop();
+  updateStats();
+  renderRoster();
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -391,7 +630,8 @@ document.addEventListener('click', e => {
   if (!e.target.closest('.search-wrap')) document.getElementById('dropdown').classList.remove('open');
 });
 
-loadMembers();
+// ─── START ────────────────────────────────────────────────────────────────────
+init();
 </script>
 </body>
 </html>
