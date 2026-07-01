@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BNI Dynamic Chapter — Treasurer Dashboard (DEMO)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+  :root {
+    --green: #2E7D32;
+    --green-light: #E8F5E9;
+    --green-mid: #4CAF50;
+    --blue: #1565C0;
+    --blue-light: #E3F2FD;
+    --red: #C62828;
+    --red-light: #FFEBEE;
+    --orange: #EF6C00;
+    --orange-light: #FFF3E0;
+    --grey: #616161;
+    --grey-light: #F5F5F5;
+    --border: #E0E0E0;
+    --text: #212121;
+    --text-sm: #757575;
+    --white: #ffffff;
+    --shadow: 0 2px 8px rgba(0,0,0,0.10);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F0F4F0; color: var(--text); font-size: 14px; }
+
+  /* DEMO BANNER */
+  .demo-banner {
+    background: linear-gradient(90deg, #EF6C00, #F57C00);
+    color: white;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: sticky; top: 0; z-index: 200;
+  }
+  .demo-banner span { opacity: 0.85; font-weight: 400; margin-left: 8px; }
+
+  /* HEADER */
+  header {
+    background: var(--green);
+    color: white;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: var(--shadow);
+  }
+  header .logo { display: flex; align-items: center; gap: 10px; }
+  header .logo .ti { font-size: 22px; }
+  header .title { font-size: 16px; font-weight: 700; }
+  header .sub { font-size: 11px; opacity: 0.8; margin-top: 1px; }
+  .header-right { font-size: 12px; opacity: 0.75; text-align: right; }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex; gap: 0;
+    background: white;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .stat {
+    flex: 1; padding: 12px 16px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat .num { font-size: 22px; font-weight: 700; line-height: 1; }
+  .stat .lbl { font-size: 11px; color: var(--text-sm); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat.paid .num  { color: var(--green); }
+  .stat.unpaid .num { color: var(--red); }
+  .stat.amt .num { color: var(--blue); font-size: 17px; }
+
+  /* MAIN LAYOUT */
+  .main { display: flex; gap: 0; min-height: calc(100vh - 130px); }
+
+  /* LEFT PANEL */
+  .left-panel {
+    width: 340px; min-width: 300px;
+    background: white;
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .panel-title {
+    padding: 14px 16px 10px;
+    font-size: 13px; font-weight: 700; color: var(--green);
+    text-transform: uppercase; letter-spacing: 0.6px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  /* SEARCH */
+  .search-wrap { padding: 14px 16px 0; position: relative; }
+  #search {
+    width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+    border-radius: var(--radius); font-size: 14px; outline: none;
+    transition: border-color 0.2s;
+  }
+  #search:focus { border-color: var(--green); }
+  #search::placeholder { color: #BDBDBD; }
+
+  .dropdown {
+    display: none; position: absolute; top: 100%; left: 16px; right: 16px; z-index: 100;
+    background: white; border: 1.5px solid var(--green); border-radius: var(--radius);
+    box-shadow: var(--shadow); max-height: 220px; overflow-y: auto;
+  }
+  .dropdown.open { display: block; }
+  .dd-item {
+    padding: 10px 14px; cursor: pointer; font-size: 13px;
+    border-bottom: 1px solid var(--grey-light);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .dd-item:last-child { border-bottom: none; }
+  .dd-item:hover, .dd-item.act { background: var(--green-light); }
+  .dd-item .dn { font-weight: 600; }
+  .dd-item .di { font-size: 11px; color: var(--text-sm); }
+
+  /* SELECTED MEMBER */
+  .sel-box {
+    display: none; margin: 10px 16px; padding: 12px;
+    background: var(--green-light); border: 1px solid #A5D6A7;
+    border-radius: var(--radius);
+    align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .sel-info .sel-name { font-weight: 700; font-size: 14px; }
+  .sel-info .sel-inv { font-size: 12px; color: var(--grey); margin-top: 2px; }
+  .clear-btn { background: none; border: none; cursor: pointer; color: var(--grey); font-size: 18px; padding: 2px; }
+
+  /* FORM FIELDS */
+  .form-group { padding: 10px 16px 0; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--grey); text-transform: uppercase; letter-spacing: 0.4px; display: block; margin-bottom: 6px; }
+  .form-group select, .form-group input[type=date] {
+    width: 100%; padding: 9px 12px; border: 1.5px solid var(--border);
+    border-radius: var(--radius); font-size: 14px; outline: none; background: white;
+    transition: border-color 0.2s;
+  }
+  .form-group select:focus, .form-group input[type=date]:focus { border-color: var(--green); }
+
+  /* METHOD TAGS */
+  .method-tags { display: flex; gap: 8px; margin-top: 6px; }
+  .mtag {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border: 1.5px solid var(--border); background: white; color: var(--grey);
+    transition: all 0.15s;
+  }
+  .mtag.active { color: white; border-color: transparent; }
+  .mtag.tng.active { background: #1565C0; }
+  .mtag.bank.active { background: #2E7D32; }
+  .mtag.cash.active { background: #EF6C00; }
+
+  /* SUBMIT BUTTON */
+  .submit-wrap { padding: 14px 16px; }
+  #sub-btn {
+    width: 100%; padding: 12px; background: var(--green); color: white;
+    border: none; border-radius: var(--radius); font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  #sub-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #sub-btn:not(:disabled):hover { background: #1B5E20; }
+
+  /* SESSION LOG */
+  .log-section { padding: 0 16px 16px; }
+  .log-title { font-size: 11px; font-weight: 700; color: var(--text-sm); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+  .log-item {
+    display: flex; align-items: center; gap: 8px; padding: 8px 10px;
+    background: var(--grey-light); border-radius: 8px; margin-bottom: 5px; font-size: 12px;
+  }
+  .log-name { flex: 1; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .log-method { padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; color: white; }
+  .log-method.TNG { background: #1565C0; }
+  .log-method.Bank { background: #2E7D32; }
+  .log-method.Cash { background: #EF6C00; }
+  .log-date { color: var(--text-sm); font-size: 11px; }
+
+  /* RIGHT PANEL */
+  .right-panel { flex: 1; display: flex; flex-direction: column; }
+
+  /* TABS */
+  .tabs { display: flex; background: white; border-bottom: 1px solid var(--border); }
+  .tab {
+    padding: 11px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+    color: var(--text-sm); border-bottom: 2.5px solid transparent; transition: all 0.15s;
+  }
+  .tab.active { color: var(--green); border-bottom-color: var(--green); }
+  .tab-badge {
+    display: inline-block; background: var(--red-light); color: var(--red);
+    border-radius: 10px; font-size: 10px; font-weight: 700; padding: 1px 6px; margin-left: 5px;
+  }
+  .tab.active .tab-badge { background: var(--green-light); color: var(--green); }
+
+  /* MEMBER LIST */
+  .member-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
+  .member-item {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border-radius: 8px; margin-bottom: 4px; transition: background 0.1s;
+  }
+  .member-item:hover { background: var(--grey-light); }
+  .member-item.paid { opacity: 0.55; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--green-light);
+    color: var(--green); display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .member-item.paid .avatar { background: #E8F5E9; color: #81C784; }
+  .member-info { flex: 1; min-width: 0; }
+  .member-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .member-inv { font-size: 11px; color: var(--text-sm); margin-top: 1px; }
+  .status-badge {
+    padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .status-badge.paid { background: var(--green-light); color: var(--green); }
+  .status-badge.unpaid { background: var(--red-light); color: var(--red); }
+  .status-badge.new { background: var(--blue-light); color: var(--blue); }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: #212121; color: white; padding: 12px 22px; border-radius: 24px;
+    font-size: 13px; font-weight: 500; z-index: 999;
+    transition: transform 0.3s ease; white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* MOBILE */
+  @media (max-width: 680px) {
+    .main { flex-direction: column; }
+    .left-panel { width: 100%; min-width: 0; border-right: none; border-bottom: 1px solid var(--border); }
+    .stats-bar .stat .num { font-size: 18px; }
+    .stats-bar .stat .lbl { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  🎭 DEMO MODE — No real data. Payments are not saved anywhere.
+  <span>For presentation / demo use only</span>
+</div>
+
+<header>
+  <div class="logo">
+    <i class="ti ti-shield-check"></i>
+    <div>
+      <div class="title">BNI Dynamic Chapter</div>
+      <div class="sub">Treasurer Dashboard</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div>July 2026</div>
+    <div style="margin-top:2px;opacity:0.6">Wenni Yu · Treasurer</div>
+  </div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat paid">
+    <div class="num" id="s-paid">0</div>
+    <div class="lbl"><i class="ti ti-check"></i> Paid</div>
+  </div>
+  <div class="stat unpaid">
+    <div class="num" id="s-unpaid">20</div>
+    <div class="lbl"><i class="ti ti-clock"></i> Unpaid</div>
+  </div>
+  <div class="stat amt">
+    <div class="num" id="s-amt">RM 0</div>
+    <div class="lbl"><i class="ti ti-currency-ringgit"></i> Collected</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="panel-title"><i class="ti ti-pencil"></i> Record Payment</div>
+
+    <div class="search-wrap">
+      <input id="search" type="text" placeholder="Search member name…" autocomplete="off"
+             oninput="onSearch()" onkeydown="onKey(event)" onfocus="onSearch()">
+      <div id="dropdown" class="dropdown"></div>
+    </div>
+
+    <div id="sel-box" class="sel-box">
+      <div class="sel-info">
+        <div class="sel-name" id="sel-name"></div>
+        <div class="sel-inv" id="sel-inv"></div>
+      </div>
+      <button class="clear-btn" onclick="clearSel()"><i class="ti ti-x"></i></button>
+    </div>
+
+    <div class="form-group">
+      <label>Payment Method</label>
+      <div class="method-tags">
+        <div class="mtag tng active" onclick="setMethod('TNG', this)">TNG eWallet</div>
+        <div class="mtag bank" onclick="setMethod('Bank', this)">Bank Transfer</div>
+        <div class="mtag cash" onclick="setMethod('Cash', this)">Cash</div>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:10px">
+      <label>Payment Date</label>
+      <input type="date" id="pdate">
+    </div>
+
+    <div class="submit-wrap">
+      <button id="sub-btn" disabled onclick="submitPayment()">
+        <i class="ti ti-check"></i> Record Payment
+      </button>
+    </div>
+
+    <div class="log-section" id="log-section" style="display:none">
+      <div class="log-title"><i class="ti ti-history"></i> This Session</div>
+      <div id="log-items"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+    <div class="tabs">
+      <div class="tab active" onclick="setTab('all', this)">
+        All <span class="tab-badge" id="badge-all">20</span>
+      </div>
+      <div class="tab" onclick="setTab('unpaid', this)">
+        Unpaid <span class="tab-badge" id="badge-unpaid">20</span>
+      </div>
+      <div class="tab" onclick="setTab('week', this)">
+        This Week <span class="tab-badge" id="badge-week">2</span>
+      </div>
+    </div>
+    <div class="member-list" id="member-list"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── DEMO DATA (fake members, no real names) ──────────────────────────────────
+const MEMBERS = [
+  { id:1,  name:'Ahmad Faizal bin Zulkifli',    inv:'IV-2607-001', amount:280 },
+  { id:2,  name:'Tan Mei Ling',                  inv:'IV-2607-002', amount:280 },
+  { id:3,  name:'Rajasekaran A/L Murugesan',     inv:'IV-2607-003', amount:280 },
+  { id:4,  name:'Lim Boon Keat',                 inv:'IV-2607-004', amount:280 },
+  { id:5,  name:'Nurul Ain binti Hashim',        inv:'IV-2607-005', amount:280 },
+  { id:6,  name:'Chong Wei Kian',                inv:'IV-2607-006', amount:280 },
+  { id:7,  name:'Siti Nor Azlina binti Ramli',   inv:'IV-2607-007', amount:280 },
+  { id:8,  name:'Goh Kah Wai',                   inv:'IV-2607-008', amount:280 },
+  { id:9,  name:'Mohd Hafizuddin bin Roslan',    inv:'IV-2607-009', amount:280 },
+  { id:10, name:'Jenny Lee Siew Ching',          inv:'IV-2607-010', amount:280 },
+  { id:11, name:'Prakash A/L Subramaniam',       inv:'IV-2607-011', amount:280 },
+  { id:12, name:'Wong Poh Lin',                  inv:'IV-2607-012', amount:280 },
+  { id:13, name:'Azman bin Abdul Ghani',         inv:'IV-2607-013', amount:280 },
+  { id:14, name:'Ng Siew Yin',                   inv:'IV-2607-014', amount:280 },
+  { id:15, name:'Kavitha A/P Krishnamurthy',     inv:'IV-2607-015', amount:280 },
+  { id:16, name:'Zulkarnain bin Osman',          inv:'IV-2607-016', amount:280 },
+  { id:17, name:'Foong Yee Ling',                inv:'IV-2607-017', amount:280 },
+  { id:18, name:'Muhammad Iqbal bin Samsudin',   inv:'IV-2607-018', amount:280 },
+  { id:19, name:'Chua Beng Huat',                inv:'IV-2607-019', amount:280 },
+  { id:20, name:'Nadia binti Kamarudin',         inv:'IV-2607-020', amount:280 },
+];
+
+// Members "joined this week" for the This Week tab
+const NEW_THIS_WEEK = [19, 20];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let paidSet = new Set();
+let sessionLog = [];
+let selected = null;
+let currentMethod = 'TNG';
+let currentTab = 'all';
+let ddIdx = -1;
+let visible = [];
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+document.getElementById('pdate').value = new Date().toISOString().slice(0, 10);
+updateStats();
+renderRoster();
+
+// ─── SEARCH ──────────────────────────────────────────────────────────────────
+function onSearch() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const dd = document.getElementById('dropdown');
+  visible = q.length < 1
+    ? MEMBERS.slice(0, 10)
+    : MEMBERS.filter(m => m.name.toLowerCase().includes(q));
+  if (!visible.length) { dd.classList.remove('open'); return; }
+  dd.innerHTML = visible.map((m, i) => `
+    <div class="dd-item" onmousedown="selectMember(${i})">
+      <span class="dn">${m.name}</span>
+      <span class="di">${m.inv} · RM${m.amount}${paidSet.has(m.id) ? ' · ✓ Paid' : ''}</span>
+    </div>`).join('');
+  ddIdx = -1;
+  dd.classList.add('open');
+}
+
+function onKey(e) {
+  const dd = document.getElementById('dropdown');
+  if (!dd.classList.contains('open')) return;
+  if (e.key === 'ArrowDown') { e.preventDefault(); ddIdx = Math.min(ddIdx + 1, visible.length - 1); hilight(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); ddIdx = Math.max(ddIdx - 1, 0); hilight(); }
+  else if (e.key === 'Enter' && ddIdx >= 0) { e.preventDefault(); selectMember(ddIdx); }
+  else if (e.key === 'Escape') dd.classList.remove('open');
+}
+
+function hilight() {
+  document.querySelectorAll('.dd-item').forEach((el, i) => el.classList.toggle('act', i === ddIdx));
+}
+
+function selectMember(i) {
+  selected = visible[i];
+  document.getElementById('search').value = selected.name;
+  document.getElementById('dropdown').classList.remove('open');
+  document.getElementById('sel-name').textContent = selected.name;
+  document.getElementById('sel-inv').textContent = `${selected.inv} · RM${selected.amount}`;
+  document.getElementById('sel-box').style.display = 'flex';
+  document.getElementById('sub-btn').disabled = false;
+}
+
+function clearSel() {
+  selected = null;
+  document.getElementById('search').value = '';
+  document.getElementById('sel-box').style.display = 'none';
+  document.getElementById('sub-btn').disabled = true;
+  document.getElementById('search').focus();
+}
+
+// ─── METHOD ───────────────────────────────────────────────────────────────────
+function setMethod(m, el) {
+  currentMethod = m;
+  document.querySelectorAll('.mtag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────────────────────
+function submitPayment() {
+  if (!selected) return;
+  const date = document.getElementById('pdate').value;
+  const displayDate = date.slice(5); // MM-DD
+  paidSet.add(selected.id);
+  sessionLog.unshift({ name: selected.name, method: currentMethod, date: displayDate, inv: selected.inv });
+  toast(`✓ ${selected.name.split(' ')[0]} · ${currentMethod} · recorded`);
+  const s = selected;
+  clearSel();
+  updateStats();
+  renderRoster();
+  renderLog();
+}
+
+// ─── STATS ────────────────────────────────────────────────────────────────────
+function updateStats() {
+  const paid = paidSet.size;
+  const unpaid = MEMBERS.length - paid;
+  const amt = paid * 280;
+  document.getElementById('s-paid').textContent = paid;
+  document.getElementById('s-unpaid').textContent = unpaid;
+  document.getElementById('s-amt').textContent = `RM ${amt.toLocaleString()}`;
+  document.getElementById('badge-all').textContent = MEMBERS.length;
+  document.getElementById('badge-unpaid').textContent = unpaid;
+  document.getElementById('badge-week').textContent = NEW_THIS_WEEK.length;
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────────────────
+function setTab(tab, el) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderRoster();
+}
+
+// ─── ROSTER ───────────────────────────────────────────────────────────────────
+function renderRoster() {
+  let list;
+  if (currentTab === 'all') list = MEMBERS;
+  else if (currentTab === 'unpaid') list = MEMBERS.filter(m => !paidSet.has(m.id));
+  else list = MEMBERS.filter(m => NEW_THIS_WEEK.includes(m.id));
+
+  const el = document.getElementById('member-list');
+  if (!list.length) {
+    el.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-sm)">
+      <i class="ti ti-check-circle" style="font-size:36px;color:var(--green);display:block;margin-bottom:8px"></i>
+      ${currentTab === 'unpaid' ? 'All members have paid! 🎉' : 'No members to show'}
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = list.map(m => {
+    const paid = paidSet.has(m.id);
+    const isNew = NEW_THIS_WEEK.includes(m.id);
+    const initials = m.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const badge = currentTab === 'week'
+      ? `<span class="status-badge new">New</span>`
+      : paid
+        ? `<span class="status-badge paid"><i class="ti ti-check"></i> Paid</span>`
+        : `<span class="status-badge unpaid">Unpaid</span>`;
+    return `
+    <div class="member-item ${paid && currentTab !== 'week' ? 'paid' : ''}">
+      <div class="avatar">${initials}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name}</div>
+        <div class="member-inv">${m.inv} · RM${m.amount}</div>
+      </div>
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+// ─── LOG ──────────────────────────────────────────────────────────────────────
+function renderLog() {
+  const sec = document.getElementById('log-section');
+  const items = document.getElementById('log-items');
+  if (!sessionLog.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  items.innerHTML = sessionLog.slice(0, 6).map(l => `
+    <div class="log-item">
+      <i class="ti ti-check" style="color:var(--green);font-size:14px;flex-shrink:0"></i>
+      <span class="log-name">${l.name.split(' ')[0]} ${l.name.split(' ')[1] || ''}</span>
+      <span class="log-method ${l.method}">${l.method}</span>
+      <span class="log-date">${l.date}</span>
+    </div>`).join('');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// close dropdown on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) document.getElementById('dropdown').classList.remove('open');
+});
+</script>
+</body>
+</html>
